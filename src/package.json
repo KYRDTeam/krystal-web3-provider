@@ -14,9 +14,9 @@
   "author": "Trust <support@trustwalletapp.com>",
   "license": "MIT",
   "scripts": {
-    "build": "npx browserify index.js -t [ babelify --presets [ @babel/preset-env ] ] | uglifyjs > ../dist/trust-min.js",
-    "prepare-publish": "mkdir -p dist && cp ../dist/trust-min.js ./dist/trust-min.js",
+    "prepare-publish": "mkdir -p dist && cp ../dist/krystal-min.js ./dist/krystal-min.js",
     "publish-npm-package": "npm run prepare-publish && npm publish --access public",
+    "build": "npx browserify index.js -t [ babelify --presets [ @babel/preset-env ] ] | uglifyjs > ../dist/krystal-min.js",
     "lint": "eslint . --fix",
     "test": "jest",
     "lfs-fix": "git rm --cached --force ../dist/trust-min.js && git add ../dist/trust-min.js"
