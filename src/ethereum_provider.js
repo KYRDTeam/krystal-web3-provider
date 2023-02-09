@@ -14,7 +14,7 @@ import isUtf8 from "isutf8";
 import { TypedDataUtils, SignTypedDataVersion } from "@metamask/eth-sig-util";
 import BaseProvider from "./base_provider";
 
-class TrustWeb3Provider extends BaseProvider {
+class KrystalWeb3Provider extends BaseProvider {
   constructor(config) {
     super(config);
     this.setConfig(config);
@@ -57,7 +57,7 @@ class TrustWeb3Provider extends BaseProvider {
   request(payload) {
     // this points to window in methods like web3.eth.getAccounts()
     var that = this;
-    if (!(this instanceof TrustWeb3Provider)) {
+    if (!(this instanceof KrystalWeb3Provider)) {
       that = window.ethereum;
     }
     return that._request(payload, false);
@@ -104,7 +104,7 @@ class TrustWeb3Provider extends BaseProvider {
       default:
         throw new ProviderRpcError(
           4200,
-          `Trust does not support calling ${payload.method} synchronously without a callback. Please provide a callback parameter to call ${payload.method} asynchronously.`
+          `Krystal does not support calling ${payload.method} synchronously without a callback. Please provide a callback parameter to call ${payload.method} asynchronously.`
         );
     }
     return response;
@@ -119,7 +119,7 @@ class TrustWeb3Provider extends BaseProvider {
     );
     // this points to window in methods like web3.eth.getAccounts()
     var that = this;
-    if (!(this instanceof TrustWeb3Provider)) {
+    if (!(this instanceof KrystalWeb3Provider)) {
       that = window.ethereum;
     }
     if (Array.isArray(payload)) {
@@ -193,7 +193,7 @@ class TrustWeb3Provider extends BaseProvider {
         case "eth_subscribe":
           throw new ProviderRpcError(
             4200,
-            `Trust does not support calling ${payload.method}. Please use your own solution`
+            `Krystal does not support calling ${payload.method}. Please use your own solution`
           );
         default:
           // call upstream rpc
@@ -369,4 +369,4 @@ class TrustWeb3Provider extends BaseProvider {
   }
 }
 
-module.exports = TrustWeb3Provider;
+module.exports = KrystalWeb3Provider;
