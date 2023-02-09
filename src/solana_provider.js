@@ -14,7 +14,7 @@ import ProviderRpcError from "./error";
 
 const { PublicKey, Connection } = Web3;
 
-class TrustSolanaWeb3Provider extends BaseProvider {
+class KrystalSolanaWeb3Provider extends BaseProvider {
   constructor(config) {
     super(config);
 
@@ -176,11 +176,11 @@ class TrustSolanaWeb3Provider extends BaseProvider {
           // throw errors for unsupported methods
           throw new ProviderRpcError(
             4200,
-            `Trust does not support calling ${payload.method} yet.`
+            `Krystal does not support calling ${payload.method} yet.`
           );
       }
     });
   }
 }
 
-module.exports = TrustSolanaWeb3Provider;
+module.exports = KrystalSolanaWeb3Provider;

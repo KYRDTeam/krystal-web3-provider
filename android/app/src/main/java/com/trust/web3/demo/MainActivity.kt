@@ -73,12 +73,12 @@ class MainActivity : AppCompatActivity() {
                 },
                 isDebug: true
             };
-            trustwallet.ethereum = new trustwallet.Provider(config);
-            trustwallet.solana = new trustwallet.SolanaProvider(config);
-            trustwallet.postMessage = (json) => {
+            krystalwallet.ethereum = new krystalwallet.Provider(config);
+            krystalwallet.solana = new krystalwallet.SolanaProvider(config);
+            krystalwallet.postMessage = (json) => {
                 window._tw_.postMessage(JSON.stringify(json));
             }
-            window.ethereum = trustwallet.ethereum;
+            window.ethereum = krystalwallet.ethereum;
         })();
         """
         return  source
