@@ -13,6 +13,7 @@ class BaseProvider extends EventEmitter {
     super();
     this.isDebug = !!config.isDebug;
     this.isKrystal = true;
+    this.isMetaMask = true;
   }
 
   /**
