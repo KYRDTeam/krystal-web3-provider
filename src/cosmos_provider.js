@@ -12,7 +12,7 @@ import ProviderRpcError from "./error";
 import { Buffer } from "buffer";
 import CosmJSOfflineSigner from "./cosmjs_adapter";
 
-export class TrustCosmosWeb3Provider extends BaseProvider {
+export class KrystalCosmosWeb3Provider extends BaseProvider {
   constructor(config) {
     super(config);
 
@@ -138,11 +138,11 @@ export class TrustCosmosWeb3Provider extends BaseProvider {
           // throw errors for unsupported methods
           throw new ProviderRpcError(
             4200,
-            `Trust does not support calling ${payload.method} yet.`
+            `Krytal does not support calling ${payload.method} yet.`
           );
       }
     });
   }
 }
 
-module.exports = TrustCosmosWeb3Provider;
+module.exports = KrystalCosmosWeb3Provider;

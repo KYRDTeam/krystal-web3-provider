@@ -6,15 +6,15 @@
 
 "use strict";
 
-import TrustWeb3Provider from "./ethereum_provider";
-import TrustSolanaWeb3Provider from "./solana_provider";
-import TrustCosmosWeb3Provider from "./cosmos_provider";
-import TrustAptosWeb3Provider from "./aptos_provider";
+import KrystalWeb3Provider from "./ethereum_provider";
+import KrystalSolanaWeb3Provider from "./solana_provider";
+import KrystalCosmosWeb3Provider from "./cosmos_provider";
+import KrystalAptosWeb3Provider from "./aptos_provider";
 
-window.trustwallet = {
-  Provider: TrustWeb3Provider,
-  SolanaProvider: TrustSolanaWeb3Provider,
-  CosmosProvider: TrustCosmosWeb3Provider,
-  AptosProvider: TrustAptosWeb3Provider,
+window.krystalwallet = {
+  Provider: KrystalWeb3Provider,
+  SolanaProvider: KrystalSolanaWeb3Provider,
+  CosmosProvider: KrystalCosmosWeb3Provider,
+  AptosProvider: KrystalAptosWeb3Provider,
   postMessage: null,
 };
