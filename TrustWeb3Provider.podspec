@@ -23,6 +23,6 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '12.0'
   s.source_files = 'dist/**/*.swift'
   s.resource_bundles = {
-    'TrustWeb3Provider' => ['dist/trust-min.js']
+    'TrustWeb3Provider' => ['dist/krystal-min.js']
   }
 end
