@@ -17,7 +17,7 @@ let package = Package(
             dependencies: [],
             path: "dist",
             resources: [
-                .process("trust-min.js", localization: .none)
+                .process("krystal-min.js", localization: .none)
             ]
         )
     ]

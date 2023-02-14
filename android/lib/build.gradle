@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'maven-publish'
 
-group='com.trustwallet'
+group='com.krystalwallet'
 
 def getArtificatId = { ->
     return "web3-provider"

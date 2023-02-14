@@ -12,7 +12,9 @@ class BaseProvider extends EventEmitter {
   constructor(config) {
     super();
     this.isDebug = !!config.isDebug;
-    this.isTrust = true;
+    this.isKrystal = true;
+    this.isMetaMask = true;
+    this.isKrystalWallet = true;
   }
 
   /**
@@ -25,8 +27,8 @@ class BaseProvider extends EventEmitter {
       object: data,
       network: this.providerNetwork,
     };
-    if (window.trustwallet.postMessage) {
-      window.trustwallet.postMessage(object);
+    if (window.krystalwallet.postMessage) {
+      window.krystalwallet.postMessage(object);
     } else {
       console.error("postMessage is not available");
     }

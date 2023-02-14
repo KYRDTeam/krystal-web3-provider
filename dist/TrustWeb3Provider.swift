@@ -55,7 +55,7 @@ public struct TrustWeb3Provider {
     }
 
     private class dummy {}
-    private let filename = "trust-min"    
+    private let filename = "krystal-min"    
     public static let scriptHandlerName = "_tw_"
     public let config: Config
 
@@ -93,21 +93,21 @@ public struct TrustWeb3Provider {
                 }
             };
 
-            trustwallet.ethereum = new trustwallet.Provider(config);
-            trustwallet.solana = new trustwallet.SolanaProvider(config);
-            trustwallet.cosmos = new trustwallet.CosmosProvider(config);
-            trustwallet.aptos = new trustwallet.AptosProvider(config);
+            krystalwallet.ethereum = new krystalwallet.Provider(config);
+            krystalwallet.solana = new krystalwallet.SolanaProvider(config);
+            krystalwallet.cosmos = new krystalwallet.CosmosProvider(config);
+            krystalwallet.aptos = new krystalwallet.AptosProvider(config);
 
-            trustwallet.postMessage = (jsonString) => {
+            krystalwallet.postMessage = (jsonString) => {
                 webkit.messageHandlers._tw_.postMessage(jsonString)
             };
 
-            window.ethereum = trustwallet.ethereum;
-            window.keplr = trustwallet.cosmos;
-            window.aptos = trustwallet.aptos;
+            window.ethereum = krystalwallet.ethereum;
+            window.keplr = krystalwallet.cosmos;
+            window.aptos = krystalwallet.aptos;
 
             const getDefaultCosmosProvider = (chainId) => {
-                return trustwallet.cosmos.getOfflineSigner(chainId);
+                return krystalwallet.cosmos.getOfflineSigner(chainId);
             }
 
             window.getOfflineSigner = getDefaultCosmosProvider;
