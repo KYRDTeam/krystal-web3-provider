@@ -35,7 +35,7 @@ class KrystalWeb3Provider extends BaseProvider {
     try {
       for (var i = 0; i < window.frames.length; i++) {
         const frame = window.frames[i];
-        if (frame.ethereum && frame.ethereum.isKrystal) {
+        if (frame.ethereum && frame.ethereum.isKrystal || frame.ethereum.isKrystalWallet) {
           frame.ethereum.address = lowerAddress;
           frame.ethereum.ready = !!address;
         }
