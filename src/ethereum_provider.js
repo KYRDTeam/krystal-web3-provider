@@ -23,7 +23,6 @@ class KrystalWeb3Provider extends BaseProvider {
     this.idMapping = new IdMapping();
     this.callbacks = new Map();
     this.wrapResults = new Map();
-    this.isMetaMask = !!config.ethereum.isMetaMask;
 
     this.emitConnect(this.chainId);
   }
@@ -35,7 +34,7 @@ class KrystalWeb3Provider extends BaseProvider {
     try {
       for (var i = 0; i < window.frames.length; i++) {
         const frame = window.frames[i];
-        if (frame.ethereum && frame.ethereum.isKrystal || frame.ethereum.isKrystalWallet) {
+        if (frame.ethereum && (frame.ethereum.isKrystal || frame.ethereum.isKrystalWallet)) {
           frame.ethereum.address = lowerAddress;
           frame.ethereum.ready = !!address;
         }
