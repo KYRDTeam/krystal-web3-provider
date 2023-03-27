@@ -6,7 +6,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'TrustWeb3Provider'
-  s.version          = '0.4.1'
+  s.version          = '0.0.5'
   s.summary          = 'Web3 javascript wrapper provider for iOS and Android platforms.'
 
   s.description      = <<-DESC
