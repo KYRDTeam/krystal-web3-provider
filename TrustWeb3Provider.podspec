@@ -6,7 +6,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'TrustWeb3Provider'
-  s.version          = '1.0.0'
+  s.version          = '0.4.1'
   s.summary          = 'Web3 javascript wrapper provider for iOS and Android platforms.'
 
   s.description      = <<-DESC
@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.homepage         = 'https://github.com/TrustWallet/trust-web3-provider'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'hewigovens' => 'hewigovens@gmail.com', 'Viktor Radchenko' => 'vikmeup' }
-  s.source           = { :git => 'https://github.com/TrustWallet/trust-web3-provider.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/KYRDTeam/krystal-web3-provider.git', :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/TrustWallet'
 
   s.ios.deployment_target = '12.0'
