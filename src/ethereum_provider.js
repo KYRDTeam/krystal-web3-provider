@@ -23,7 +23,6 @@ class TrustWeb3Provider extends BaseProvider {
     this.idMapping = new IdMapping();
     this.callbacks = new Map();
     this.wrapResults = new Map();
-    this.isMetaMask = !!config.ethereum.isMetaMask;
 
     this.emitConnect(this.chainId);
   }
@@ -46,12 +45,15 @@ class TrustWeb3Provider extends BaseProvider {
   }
 
   setConfig(config) {
-    this.setAddress(config.ethereum.address);
+
+    if (config.ethereum != undefined && config.ethereum.address != undefined) {
+      this.setAddress(config.ethereum.address);
+    }
 
     this.networkVersion = "" + config.ethereum.chainId;
     this.chainId = "0x" + (config.ethereum.chainId || 1).toString(16);
     this.rpc = new RPCServer(config.ethereum.rpcUrl);
-    this.isDebug = !!config.isDebug;
+    this.isDebug = config.isDebug;
   }
 
   request(payload) {
@@ -148,6 +150,7 @@ class TrustWeb3Provider extends BaseProvider {
         payload.id = Utils.genId();
       }
       this.callbacks.set(payload.id, (error, data) => {
+
         if (error) {
           reject(error);
         } else {
@@ -173,9 +176,12 @@ class TrustWeb3Provider extends BaseProvider {
           return this.personal_ecRecover(payload);
         case "eth_signTypedData_v3":
           return this.eth_signTypedData(payload, SignTypedDataVersion.V3);
-        case "eth_signTypedData":
         case "eth_signTypedData_v4":
           return this.eth_signTypedData(payload, SignTypedDataVersion.V4);
+        case "eth_signTypedData":
+          return this.eth_signTypedData(payload, SignTypedDataVersion.V1);
+        case "eth_estimateGas":
+          return this.eth_estimateGas(payload);
         case "eth_sendTransaction":
           return this.eth_sendTransaction(payload);
         case "eth_requestAccounts":
@@ -223,8 +229,12 @@ class TrustWeb3Provider extends BaseProvider {
   }
 
   emitChainChanged(chainId) {
-    this.emit("chainChanged", chainId);
+    this.emit("chainChanged", "0x" + chainId.toString(16));
     this.emit("networkChanged", chainId);
+  }
+
+  emitAccountChanged(address) {
+    this.emit("accountsChanged", [address]);
   }
 
   eth_accounts() {
@@ -244,29 +254,44 @@ class TrustWeb3Provider extends BaseProvider {
   }
 
   eth_sign(payload) {
-    const buffer = Utils.messageToBuffer(payload.params[1]);
+    const [address, message] = payload.params;
+    const buffer = Utils.messageToBuffer(message);
     const hex = Utils.bufferToHex(buffer);
+
     if (isUtf8(buffer)) {
-      this.postMessage("signPersonalMessage", payload.id, { data: hex });
+      this.postMessage("signPersonalMessage", payload.id, {
+        data: hex,
+        address,
+      });
     } else {
-      this.postMessage("signMessage", payload.id, { data: hex });
+      this.postMessage("signMessage", payload.id, { data: hex, address });
     }
   }
 
   personal_sign(payload) {
     var message;
-    if (this.address === payload.params[0]) {
+    let address;
+
+    if (this.address === payload.params[0].toLowerCase()) {
       message = payload.params[1];
+      address = payload.params[0];
     } else {
       message = payload.params[0];
+      address = payload.params[1];
     }
     const buffer = Utils.messageToBuffer(message);
     if (buffer.length === 0) {
       // hex it
       const hex = Utils.bufferToHex(message);
-      this.postMessage("signPersonalMessage", payload.id, { data: hex });
+      this.postMessage("signPersonalMessage", payload.id, {
+        data: hex,
+        address,
+      });
     } else {
-      this.postMessage("signPersonalMessage", payload.id, { data: message });
+      this.postMessage("signPersonalMessage", payload.id, {
+        data: message,
+        address,
+      });
     }
   }
 
@@ -278,12 +303,42 @@ class TrustWeb3Provider extends BaseProvider {
   }
 
   eth_signTypedData(payload, version) {
-    const message = JSON.parse(payload.params[1]);
-    const hash = TypedDataUtils.eip712Hash(message, version);
+    let address;
+    let data;
+
+    if (this.address === payload.params[0].toString().toLowerCase()) {
+      data = payload.params[1];
+      address = payload.params[0];
+    } else {
+      data = payload.params[0];
+      address = payload.params[1];
+    }
+
+    const message = typeof data === "string" ? JSON.parse(data) : data;
+
+    const { chainId } = message.domain || {};
+
+    if (version != SignTypedDataVersion.V1 || chainId != undefined) if (!chainId || Number(chainId) !== Number(this.chainId)) {
+      throw new Error(
+        "Provided chainId does not match the currently active chain"
+      );
+    }
+
+    const hash =
+      version !== SignTypedDataVersion.V1
+        ? TypedDataUtils.eip712Hash(message, version)
+        : "";
+
     this.postMessage("signTypedMessage", payload.id, {
       data: "0x" + hash.toString("hex"),
-      raw: payload.params[1],
+      raw: typeof data === "string" ? data : JSON.stringify(data),
+      address,
+      version,
     });
+  }
+
+  eth_estimateGas(payload) {
+    this.postMessage("estimateGas", payload.id, {});
   }
 
   eth_sendTransaction(payload) {
