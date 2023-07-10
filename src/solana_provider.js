@@ -29,10 +29,24 @@ class TrustSolanaWeb3Provider extends BaseProvider {
   }
 
   connect() {
-    return this._request("requestAccounts").then((addresses) => {
-      this.setAddress(addresses[0]);
-      this.emit("connect");
-    });
+
+    return new Promise(async (resolve, reject) => {
+
+      try {
+
+        var addresses = await this._request("requestAccounts")
+
+        this.setAddress(addresses[0]);
+        this.emit("connect");
+
+        resolve({
+          publicKey: addresses[0]
+        })
+      } catch (err) {
+
+        reject(err);
+      }
+    })
   }
 
   disconnect() {
@@ -49,6 +63,11 @@ class TrustSolanaWeb3Provider extends BaseProvider {
     this.isConnected = true;
   }
 
+  emitAccountChanged(address) {
+
+    this.emit("accountChanged", this.publicKey);
+  }
+
   signMessage(message) {
     const hex = Utils.bufferToHex(message);
     if (this.isDebug) {
@@ -61,22 +80,35 @@ class TrustSolanaWeb3Provider extends BaseProvider {
     });
   }
 
+  mapSignedTransaction(tx, signatureEncoded) {
+    const version = typeof tx.version !== "number" ? "legacy" : tx.version;
+    const signature = bs58.decode(signatureEncoded);
+
+    tx.addSignature(this.publicKey, signature);
+
+    if (version === "legacy" && !tx.verifySignatures()) {
+      throw new ProviderRpcError(4300, "Invalid signature");
+    }
+
+    if (this.isDebug) {
+      console.log(`==> signed single ${JSON.stringify(tx)}`);
+    }
+
+    return tx;
+  }
+
   signTransaction(tx) {
-    return this._request("signRawTransaction", {
-      data: JSON.stringify(tx),
-      raw: bs58.encode(tx.serializeMessage()),
-    })
-      .then((signatureEncoded) => {
-        const signature = bs58.decode(signatureEncoded);
-        tx.addSignature(this.publicKey, signature);
-        if (!tx.verifySignatures()) {
-          throw new ProviderRpcError(4300, "Invalid signature");
-        }
-        if (this.isDebug) {
-          console.log(`==> signed single ${JSON.stringify(tx)}`);
-        }
-        return tx;
-      })
+    const data = JSON.stringify(tx);
+    const version = typeof tx.version !== "number" ? "legacy" : tx.version;
+
+    const raw = bs58.encode(
+      version === "legacy" ? tx.serializeMessage() : tx.message.serialize()
+    );
+
+    return this._request("signRawTransaction", { data, raw, version })
+      .then((signatureEncoded) =>
+        this.mapSignedTransaction(tx, signatureEncoded)
+      )
       .catch((error) => {
         console.log(`<== Error: ${error}`);
       });
@@ -84,6 +116,29 @@ class TrustSolanaWeb3Provider extends BaseProvider {
 
   signAllTransactions(txs) {
     return Promise.all(txs.map((tx) => this.signTransaction(tx)));
+  }
+
+  signAllTransactionsV2(txs) {
+    return this._request("signRawTransactionMulti", {
+      transactions: txs.map((tx) => {
+        const data = JSON.stringify(tx);
+        const version = typeof tx.version !== "number" ? "legacy" : tx.version;
+
+        const raw = bs58.encode(
+          version === "legacy" ? tx.serializeMessage() : tx.serialize()
+        );
+
+        return { data, raw, version };
+      }),
+    })
+      .then((signaturesEncoded) =>
+        signaturesEncoded.map((signature, i) =>
+          this.mapSignedTransaction(txs[i], signature)
+        )
+      )
+      .catch((error) => {
+        console.log(`<== Error: ${error}`);
+      });
   }
 
   signAndSendTransaction(tx, options) {
@@ -128,6 +183,8 @@ class TrustSolanaWeb3Provider extends BaseProvider {
           return this.postMessage("signMessage", id, payload);
         case "signRawTransaction":
           return this.postMessage("signRawTransaction", id, payload);
+        case "signRawTransactionMulti":
+          return this.postMessage("signRawTransactionMulti", id, payload);
         case "requestAccounts":
           return this.postMessage("requestAccounts", id, {});
         default:
