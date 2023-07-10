@@ -23,7 +23,6 @@ class TrustWeb3Provider extends BaseProvider {
     this.idMapping = new IdMapping();
     this.callbacks = new Map();
     this.wrapResults = new Map();
-    this.isMetaMask = !!config.ethereum.isMetaMask;
 
     this.emitConnect(this.chainId);
   }
@@ -46,12 +45,15 @@ class TrustWeb3Provider extends BaseProvider {
   }
 
   setConfig(config) {
-    this.setAddress(config.ethereum.address);
+
+    if (config.ethereum != undefined && config.ethereum.address != undefined) {
+      this.setAddress(config.ethereum.address);
+    }
 
     this.networkVersion = "" + config.ethereum.chainId;
     this.chainId = "0x" + (config.ethereum.chainId || 1).toString(16);
     this.rpc = new RPCServer(config.ethereum.rpcUrl);
-    this.isDebug = !!config.isDebug;
+    this.isDebug = config.isDebug;
   }
 
   request(payload) {
@@ -148,6 +150,7 @@ class TrustWeb3Provider extends BaseProvider {
         payload.id = Utils.genId();
       }
       this.callbacks.set(payload.id, (error, data) => {
+
         if (error) {
           reject(error);
         } else {
@@ -224,8 +227,12 @@ class TrustWeb3Provider extends BaseProvider {
   }
 
   emitChainChanged(chainId) {
-    this.emit("chainChanged", chainId);
+    this.emit("chainChanged", "0x" + chainId.toString(16));
     this.emit("networkChanged", chainId);
+  }
+
+  emitAccountChanged(address) {
+    this.emit("accountsChanged", [address]);
   }
 
   eth_accounts() {
@@ -300,6 +307,7 @@ class TrustWeb3Provider extends BaseProvider {
     let address;
     let data;
 
+
     if (
       typeof payload.params?.[0] === "string" &&
       this.address === payload.params?.[0].toLowerCase()
@@ -315,7 +323,8 @@ class TrustWeb3Provider extends BaseProvider {
 
     const { chainId } = message.domain || {};
 
-    if (!chainId || Number(chainId) !== Number(this.chainId)) {
+
+    if (version != SignTypedDataVersion.V1 || chainId != undefined) if (!chainId || Number(chainId) !== Number(this.chainId)) {
       throw new Error(
         "Provided chainId does not match the currently active chain"
       );
@@ -332,6 +341,10 @@ class TrustWeb3Provider extends BaseProvider {
       address,
       version,
     });
+  }
+
+  eth_estimateGas(payload) {
+    this.postMessage("estimateGas", payload.id, {});
   }
 
   eth_sendTransaction(payload) {
