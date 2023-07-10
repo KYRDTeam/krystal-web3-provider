@@ -11,8 +11,17 @@ import { EventEmitter } from "events";
 class BaseProvider extends EventEmitter {
   constructor(config) {
     super();
-    this.isDebug = !!config.isDebug;
-    this.isTrust = true;
+
+    this.isTrust = config.isTrust;
+    this.isPhantom = config.isPhantom;
+    this.isMetaMask = config.isMetaMask;
+
+    this.isKrystal = config.isKrystal;
+    this.isKrystalWallet = config.isKrystal;
+
+    this.isDebug = config.isDebug;
+
+    console.log("tuanha", " isTrust:", this.isTrust, " isPhantom:", this.isPhantom, " isMetaMask:", this.isMetaMask, this.isDebug);
   }
 
   /**
@@ -21,6 +30,7 @@ class BaseProvider extends EventEmitter {
   postMessage(handler, id, data) {
     let object = {
       id: id,
+      chainId: this.chainId,
       name: handler,
       object: data,
       network: this.providerNetwork,
@@ -53,7 +63,7 @@ class BaseProvider extends EventEmitter {
   /**
    * @private Internal native error -> js
    */
-   sendError(id, error) {
+  sendError(id, error) {
     console.log(`<== ${id} sendError ${error}`);
     let callback = this.callbacks.get(id);
     if (callback) {
