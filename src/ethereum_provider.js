@@ -57,7 +57,7 @@ class KrystalWeb3Provider extends BaseProvider {
     // this points to window in methods like web3.eth.getAccounts()
     var that = this;
     if (!(this instanceof KrystalWeb3Provider)) {
-      that = window.ethereum;
+      that = krystalwallet.ethereum;
     }
     return that._request(payload, false);
   }
@@ -119,7 +119,7 @@ class KrystalWeb3Provider extends BaseProvider {
     // this points to window in methods like web3.eth.getAccounts()
     var that = this;
     if (!(this instanceof KrystalWeb3Provider)) {
-      that = window.ethereum;
+      that = krystalwallet.ethereum;
     }
     if (Array.isArray(payload)) {
       Promise.all(payload.map((_payload) => that._request(_payload)))
@@ -225,6 +225,10 @@ class KrystalWeb3Provider extends BaseProvider {
   emitChainChanged(chainId) {
     this.emit("chainChanged", chainId);
     this.emit("networkChanged", chainId);
+  }
+
+  emitAccountChanged(address) {
+    this.emit("accountsChanged", [address]);
   }
 
   eth_accounts() {
