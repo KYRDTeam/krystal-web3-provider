@@ -56,8 +56,8 @@ public extension TypeWrapper where T == WKWebView {
         value.evaluateJavaScript(script)
     }
 
-    func sendError(network: ProviderNetwork, errorCode: Int, message: String, to id: Int64) {
-        let script = String(format: "var error = Error(); error.code = \"%ld\"; error.message = %@; krystalwallet.\(network.rawValue).sendError(%ld, error)", errorCode, message, id)
+    func sendError(network: ProviderNetwork, errorCode: String, message: String, to id: Int64) {
+        let script = String(format: "var error = Error(); error.code = %@; error.message = \"%@\"; krystalwallet.\(network.rawValue).sendError(%ld, error)", errorCode, message, id)
         value.evaluateJavaScript(script)
     }
 
