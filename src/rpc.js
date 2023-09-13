@@ -30,7 +30,8 @@ class RPCServer {
       method: "POST",
       headers: {
         "Accept": "application/json",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "X-Client-Type": "mobile"
       },
       body: JSON.stringify(payload)
     })
