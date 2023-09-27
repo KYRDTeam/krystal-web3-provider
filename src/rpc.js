@@ -31,7 +31,8 @@ class RPCServer {
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json",
-        "X-Client-Type": "mobile"
+        "X-Client-Type": "mobile",
+        "CLIENT": "com.kyrd.krystal"
       },
       body: JSON.stringify(payload)
     })
