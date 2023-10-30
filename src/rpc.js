@@ -29,8 +29,8 @@ class RPCServer {
     return fetch(this.rpcUrl, {
       method: "POST",
       headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
+        "Accept": "*/*",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(payload)
     })
