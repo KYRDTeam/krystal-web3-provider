@@ -201,17 +201,20 @@ class TrustWeb3Provider extends BaseProvider {
           );
         default:
           // call upstream rpc
-          this.callbacks.delete(payload.id);
-          this.wrapResults.delete(payload.id);
-          return this.rpc
-            .call(payload)
-            .then((response) => {
-              if (this.isDebug) {
-                console.log(`<== rpc response ${JSON.stringify(response)}`);
-              }
-              wrapResult ? resolve(response) : resolve(response.result);
-            })
-            .catch(reject);
+
+          // this.callbacks.delete(payload.id);
+          // this.wrapResults.delete(payload.id);
+          // return this.rpc
+          //   .call(payload)
+          //   .then((response) => {
+          //     if (this.isDebug) {
+          //       console.log(`<== rpc response ${JSON.stringify(response)}`);
+          //     }
+          //     wrapResult ? resolve(response) : resolve(response.result);
+          //   })
+          //   .catch(reject);
+
+          return this.eth_nativeCallRpc(payload);
       }
     });
   }
@@ -371,6 +374,10 @@ class TrustWeb3Provider extends BaseProvider {
 
   wallet_switchEthereumChain(payload) {
     this.postMessage("switchEthereumChain", payload.id, payload.params[0]);
+  }
+
+  eth_nativeCallRpc(payload) {
+    this.postMessage("eth_nativeCallRpc", payload.id, payload);
   }
 
   /**
