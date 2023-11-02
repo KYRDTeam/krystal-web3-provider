@@ -29,10 +29,8 @@ class RPCServer {
     return fetch(this.rpcUrl, {
       method: "POST",
       headers: {
-        "Accept": "application/json",
+        "Accept": "*/*",
         "Content-Type": "application/json",
-        "X-Client-Type": "mobile",
-        "CLIENT": "com.kyrd.krystal"
       },
       body: JSON.stringify(payload)
     })
