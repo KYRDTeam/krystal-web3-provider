@@ -190,6 +190,8 @@ class TrustWeb3Provider extends BaseProvider {
           return this.wallet_addEthereumChain(payload);
         case "wallet_switchEthereumChain":
           return this.wallet_switchEthereumChain(payload);
+        case "eth_call":
+          return this.eth_call(payload);
         case "eth_newFilter":
         case "eth_newBlockFilter":
         case "eth_newPendingTransactionFilter":
@@ -355,6 +357,10 @@ class TrustWeb3Provider extends BaseProvider {
 
   eth_requestAccounts(payload) {
     this.postMessage("requestAccounts", payload.id, {});
+  }
+
+  eth_call(payload) {
+    this.postMessage("ethCall", payload.id, payload.params[0]);
   }
 
   wallet_watchAsset(payload) {
