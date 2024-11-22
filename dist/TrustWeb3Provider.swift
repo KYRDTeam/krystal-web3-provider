@@ -105,6 +105,7 @@ public struct TrustWeb3Provider {
             window.ethereum = krystalwallet.ethereum;
             window.keplr = krystalwallet.cosmos;
             window.aptos = krystalwallet.aptos;
+            window.solana = krystalwallet.solana;
             window.phantom = krystalwallet;
 
             const getDefaultCosmosProvider = (chainId) => {
