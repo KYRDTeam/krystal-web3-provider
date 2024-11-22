@@ -29,10 +29,24 @@ class KrystalSolanaWeb3Provider extends BaseProvider {
   }
 
   connect() {
-    return this._request("requestAccounts").then((addresses) => {
-      this.setAddress(addresses[0]);
-      this.emit("connect");
-    });
+
+    return new Promise(async (resolve, reject) => {
+
+      try {
+
+        var addresses = await this._request("requestAccounts")
+
+        this.setAddress(addresses[0]);
+        this.emit("connect");
+
+        resolve({
+          publicKey: addresses[0]
+        })
+      } catch (err) {
+
+        reject(err);
+      }
+    })
   }
 
   disconnect() {
@@ -49,7 +63,8 @@ class KrystalSolanaWeb3Provider extends BaseProvider {
     this.isConnected = true;
   }
 
-  emitAccountChanged() {
+  emitAccountChanged(address) {
+
     this.emit("accountChanged", this.publicKey);
   }
 
