@@ -64,7 +64,7 @@ class KrystalSolanaWeb3Provider extends BaseProvider {
   }
 
   emitAccountChanged(address) {
-
+    this.publicKey = new PublicKey(address);
     this.emit("accountChanged", this.publicKey);
   }
 
