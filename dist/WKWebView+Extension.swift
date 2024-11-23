@@ -46,8 +46,8 @@ public extension TypeWrapper where T == WKWebView {
         value.evaluateJavaScript(script)
     }
 
-    func emitChangeAccount(address: String) {
-        let script = String(format: "krystalwallet.ethereum.emitAccountChanged(\"%@\");", address)
+    func emitChangeAccount(network: ProviderNetwork, address: String) {
+        let script = String(format: "krystalwallet.\(network.rawValue).emitAccountChanged(\"%@\");", address)
         value.evaluateJavaScript(script)
     }
 
